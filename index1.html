@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Window 1</title>
+  </head>
+  <body>
+    <h1>Hello World from window1!</h1>
+    <!-- All of the Node.js APIs are available in this renderer process. -->
+    We are using Node.js <script>document.write(process.versions.node)</script>,
+    Chromium <script>document.write(process.versions.chrome)</script>,
+    and Electron <script>document.write(process.versions.electron)</script>.
+    <p><div id="test"></div></p>
+  </body>
+
+  <script>
+    // You can also require other files to run in this process
+    // require('./renderer.js')
+    const {ipcRenderer} = require('electron')
+
+    const sendButton = document.createElement("button");
+    sendButton.innerHTML = "Send message!";
+    document.body.appendChild(sendButton);
+    sendButton.addEventListener("click", (e) => {
+      ipcRenderer.send('win1msg', 'Window1 message!')
+    });
+
+    const printButton = document.createElement("button");
+    printButton.innerHTML = "Print hello!";
+    document.body.appendChild(printButton);
+    printButton.addEventListener("click", (e) => {
+      document.getElementById('test').innerHTML = 'hello!';
+    });
+
+    // console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // "pong"
+
+    ipcRenderer.on('hello', (event, arg) => {
+      document.getElementById('test').innerHTML = arg; // "pong"
+    })
+  </script>
+</html>
