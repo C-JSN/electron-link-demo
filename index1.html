@@ -14,9 +14,14 @@
   </body>
 
   <script>
-    // You can also require other files to run in this process
-    // require('./renderer.js')
     const {ipcRenderer} = require('electron')
+
+    const createButton = document.createElement("button");
+    createButton.innerHTML = "Create window";
+    document.body.appendChild(createButton);
+    createButton.addEventListener("click", (e) => {
+      ipcRenderer.send('createWin')
+    });
 
     const sendButton = document.createElement("button");
     sendButton.innerHTML = "Send message!";
@@ -24,18 +29,5 @@
     sendButton.addEventListener("click", (e) => {
       ipcRenderer.send('win1msg', 'Window1 message!')
     });
-
-    const printButton = document.createElement("button");
-    printButton.innerHTML = "Print hello!";
-    document.body.appendChild(printButton);
-    printButton.addEventListener("click", (e) => {
-      document.getElementById('test').innerHTML = 'hello!';
-    });
-
-    // console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // "pong"
-
-    ipcRenderer.on('hello', (event, arg) => {
-      document.getElementById('test').innerHTML = arg; // "pong"
-    })
   </script>
 </html>

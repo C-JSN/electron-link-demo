@@ -14,16 +14,7 @@
   </body>
 
   <script>
-    // You can also require other files to run in this process
-    // require('./renderer.js')
     const {ipcRenderer} = require('electron')
-
-    const sendButton = document.createElement("button");
-    sendButton.innerHTML = "Send message!";
-    document.body.appendChild(sendButton);
-    sendButton.addEventListener("click", (e) => {
-      ipcRenderer.send('win2msg', 'Window2 message!')
-    });
 
     const printButton = document.createElement("button");
     printButton.innerHTML = "Print hello!";
@@ -32,10 +23,8 @@
       document.getElementById('test').innerHTML = 'hello!';
     });
 
-    // console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // "pong"
-
     ipcRenderer.on('hello', (event, arg) => {
-      document.getElementById('test').innerHTML = arg; // "pong"
+      document.getElementById('test').innerHTML = arg;
     })
   </script>
 </html>

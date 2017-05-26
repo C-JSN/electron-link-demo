@@ -1,64 +1,34 @@
-const electron = require('electron')
-// Module to control application life.
-const app = electron.app
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow
+const electron = require('electron');
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow;
+const path = require('path');
+const url = require('url');
+const {ipcMain} = require('electron');
+let win1, win2;
 
-const path = require('path')
-const url = require('url')
+function createWindow (index, width, height) {
+  let window = new BrowserWindow({width: width, height: height});
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let win1
-let win2
-
-const {ipcMain} = require('electron')
-
-// ipcMain.on('synchronous-message', (event, arg) => {
-//   console.log(arg)  // prints "ping"
-//   event.returnValue = 'pong'
-// })
-
-function createWindow (index) {
-  // Create the browser window.
-  let window = new BrowserWindow({width: 800, height: 600})
-
-  // and load the index.html of the app.
   window.loadURL(url.format({
     pathname: path.join(__dirname, index),
     protocol: 'file:',
     slashes: true
-  }))
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
-
-  // Emitted when the window is closed.
-  window.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    window = null
-  })
-
+  }));
   return window;
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on('ready', function() {
-  win1 = createWindow('index1.html');
-  win2 = createWindow('index2.html');
+  win1 = createWindow('index1.html', 600, 600);
+  win1.on('closed', function () {win1 = null});
 
-  // webContents is a Node class EventEmitter.
+  ipcMain.on('createWin', (event) => {
+    if (!win2) win2 = createWindow('index2.html', 400, 400);
+    win2.on('closed', function () {win2 = null});
+  });
+
   ipcMain.on('win1msg', (event, arg) => {
     win2.webContents.send('hello', arg)
-  })
-
-  ipcMain.on('win2msg', (event, arg) => {
-    win1.webContents.send('hello', arg)
-  })
+  });
 });
 
 // Quit when all windows are closed.
